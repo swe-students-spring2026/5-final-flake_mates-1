@@ -2,7 +2,7 @@ services:
   web-app:
     build: ./web_app
     ports:
-      - "5000:5000"
+      - "5002:5000"
     depends_on:
       - mongodb
     environment:
