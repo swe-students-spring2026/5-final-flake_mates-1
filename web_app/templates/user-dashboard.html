@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <title>User Dashboard</title>
+</head>
+
+<body>
+    <section class="header">
+        <span class="logo">
+            <img src="{{ url_for('static', filename='icons/fm copy.svg') }}" alt="fm">
+        </span>
+        <h1>FlakeMate</h1>
+    </section>
+
+    <h2 class="dashboard-title">user setting</h2>
+
+    {% if error %}
+    <p class="auth-error">{{ error }}</p>
+    {% endif %}
+
+    {% if message %}
+    <p class="auth-error">{{ message }}</p>
+    {% endif %}
+
+    <form class="dashboard-form" method="POST" action="{{ url_for('user_dashboard') }}">
+        <input class="auth-input" type="text" name="name" placeholder="edit username">
+        <input class="auth-input" type="text" name="phone_number" placeholder="edit phone #">
+        <input class="auth-input" type="password" name="password" placeholder="edit password">
+        <button class="dashboard-button" type="submit">save</button>
+    </form>
+
+    <a class="dashboard-button dashboard-signout" href="{{ url_for('sign_out') }}">sign out</a>
+
+    <section class="nav-bottom">
+        <a href="{{ url_for('home_upcoming') }}">
+            <img src="{{ url_for('static', filename='icons/calendar (3) 1 copy.svg') }}" alt="calendar">
+        </a>
+        <a href="{{ url_for('invites') }}">
+            <img src="{{ url_for('static', filename='icons/tray.svg') }}" alt="inbox">
+        </a>
+        <a href="{{ url_for('host_events') }}">
+            <img src="{{ url_for('static', filename='icons/plus.app.svg') }}" alt="create">
+        </a>
+        <a href="{{ url_for('user_dashboard') }}">
+            <img src="{{ url_for('static', filename='icons/person.fill.svg') }}" alt="user">
+        </a>
+    </section>
+</body>
+</html>

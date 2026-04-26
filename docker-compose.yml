@@ -5,6 +5,9 @@ services:
       - "5000:5000"
     depends_on:
       - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - MONGO_DBNAME=flakemate
 
   invite-adjuster:
     build: ./invite_adjuster
@@ -12,6 +15,9 @@ services:
       - "5001:5000"
     depends_on:
       - mongodb
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017/
+      - MONGO_DBNAME=flakemate
 
   mongodb:
     image: mongo:latest

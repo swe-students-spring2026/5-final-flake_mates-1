@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Afacad:ital,wght@0,400..700;1,400..700&display=swap" rel="stylesheet">
+    <title>Sign In</title>
+</head>
+
+<body>
+    <section class="auth-page">
+        <section class="auth-header">
+            <span class="auth-logo">
+                <img src="{{ url_for('static', filename='icons/fm copy.svg') }}" alt="fm">
+            </span>
+            <h1>FlakeMate</h1>
+        </section>
+
+        <h2 class="auth-title">sign in</h2>
+
+        {% if error %}
+        <p class="auth-error">{{ error }}</p>
+        {% endif %}
+
+        <form class="auth-form" method="POST" action="{{ url_for('sign_in') }}">
+            <input class="auth-input" type="text" name="phone_number" placeholder="phone #" required>
+            <input class="auth-input" type="password" name="password" placeholder="password" required>
+
+            <button class="auth-button" type="submit">log in</button>
+        </form>
+
+        <a class="auth-switch" href="{{ url_for('create_account') }}">
+            new user? create account
+        </a>
+    </section>
+</body>
+</html>
