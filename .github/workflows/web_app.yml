@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
     paths:
-      - 'web-app/**'
+      - 'web_app/**'
       - '.github/workflows/web_app.yml'
   pull_request:
     branches: [main]
