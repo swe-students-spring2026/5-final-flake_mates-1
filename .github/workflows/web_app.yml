@@ -5,19 +5,19 @@ on:
     branches: [main]
     paths:
       - 'web-app/**'
-      - '.github/workflows/web-app.yml'
+      - '.github/workflows/web_app.yml'
   pull_request:
     branches: [main]
     paths:
-      - 'web-app/**'
-      - '.github/workflows/web-app.yml'
+      - 'web_app/**'
+      - '.github/workflows/web_app.yml'
 
 jobs:
   test:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: web-app
+        working-directory: web_app
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
