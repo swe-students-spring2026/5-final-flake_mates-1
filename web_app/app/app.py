@@ -249,7 +249,43 @@ def home_upcoming():
 @app.route("/invites")
 @login_required
 def invites():
-    return render_template("invites.html")
+    # get current user
+    users_collection = get_users_collection()
+    user = users_collection.find_one({"_id": ObjectId(current_user.id)})
+
+    # get all of the invited events
+    current_datetime = datetime.now()
+    invited_events = []
+
+    user_event_datetimes = {}
+
+    # go through the user's upcoming invited events
+    if "event_invites" in user and user["event_invites"]:
+        if isinstance(user["event_invites"], dict):
+            for event_id, event_datetime in user["event_invites"].items():
+                if event_datetime >= current_datetime:
+                    user_event_datetimes[event_id] = event_datetime
+
+    # we have to get all of the details for the events
+    if user_event_datetimes:
+        events_collection = get_db()["events"]
+        # go through each event
+        for event_id, event_datetime in user_event_datetimes.items():
+            event = events_collection.find_one({"_id": ObjectId(event_id)})
+
+            if event:
+                invited_events.append({
+                    "_id": event.get("_id"),
+                    "name": event.get("name", "Untitled Event"),
+                    "location": event.get("location", "No location specified"),
+                    "date": event_datetime,
+                    "details": event.get("description", "No description provided")
+                })
+
+    # we have to sort the events by the most recent first
+    invited_events.sort(key=lambda x: x["date"])
+
+    return render_template("invites.html", invited_events=invited_events)
 
 
 @app.route("/host-events")
