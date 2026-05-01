@@ -2,8 +2,9 @@ import requests
 from pymongo import MongoClient
 from bson import ObjectId
 import time
+import os
 
-MONGO_URI = "mongodb://mongodb:27017/"
+MONGO_URI = os.getenv("MONGO_URI", "mongodb://localhost:27017/")
 DB_NAME = "flakemate"
 USER_ID = "69f4a33044e301353c9f2c1c"
 LATENESS_VALUES = [15, -5, 5, 0, -3, 18]
