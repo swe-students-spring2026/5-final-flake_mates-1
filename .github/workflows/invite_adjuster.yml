@@ -30,6 +30,6 @@ jobs:
           python-version: "3.9"
       - run: pip install pipenv
       - run: pipenv install --dev pytest pytest-cov
-      - run: pipenv run python app/app.py &
+      - run: MONGO_URI=mongodb://localhost:27017/ MONGO_DBNAME=flakemate pipenv run python app/app.py &
       - run: sleep 15
       - run: pipenv run pytest
