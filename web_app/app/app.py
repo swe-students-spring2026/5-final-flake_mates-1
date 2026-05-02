@@ -308,6 +308,46 @@ def host_events():
             })
     return render_template("host-events.html", hosting_events=hosting_events)
 
+@app.route("/host-events/create", methods=["GET", "POST"])
+@login_required
+def create_host_event():
+    users = get_users_collection()
+    events = get_db()["events"]
+
+    error = None
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        location = request.form.get("location", "").strip()
+        date = request.form.get("date", "").strip()
+        time  = request.form.get("time", "").strip()
+        details = request.form.get("details", "").strip()
+
+        invitee_usernames = request.form.getlist("invitee_username")
+        invitee_times = request.form.getlist("invitee_time") #change later so that the flake-setting works
+
+        if not name or not location or not date or not time:
+            error = "Please fill in all required fields."
+            return render_template("create-host-event.html", error=error)
+        
+        else:
+            try:
+                event_datetime = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+                event_id = events.insert_one({
+                    "name": name,
+                    "location": location,
+                    "description": details,
+                    "invitees_list": []
+                }).inserted_id
+
+                users.update_one(
+                    {"_id": ObjectId(current_user.id)},
+                    {"$set": {f"events_owned.{str(event_id)}": event_datetime}}
+                )
+
+                return redirect(url_for("host_events"))
+            except ValueError:
+                error = "Invalid date format. Please use the correct format."
 
 @app.route("/user", methods=["GET", "POST"])
 @login_required
