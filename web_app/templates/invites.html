@@ -25,12 +25,12 @@
         <ul class="invites">
             {% for event in invited_events %}
             <li class="invited-event">
-                <h3>{{ event.name }}</h3>
+                <h3>{{ event.name }} {{event.host}}</h3>
                 <p>{{ event.location }} @ {{ event.date|format_time }}</p>
                 <p>{{ event.details }}</p>
                 <span class="invite-actions">
-                    <!-- <button class="accept-button"><img src="../icons/checkmark.circle.svg" alt="Accept" color="#e693ff"></button> -->
-                    <!-- <button class="decline-button"><img src="../icons/x.circle.svg" alt="Decline" color="#e693ff"></button> -->
+                    <button class="accept-button"><img src="../icons/checkmark.circle.svg" alt="Accept" color="#e693ff"></button>
+                    <button class="decline-button"><img src="../icons/x.circle.svg" alt="Decline" color="#e693ff"></button>
                 </span>
             </li>
             {% endfor %}

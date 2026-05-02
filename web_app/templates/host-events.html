@@ -20,12 +20,15 @@
     <section class="content">
         <div class="content-header">
             <h2>hosting</h2>
-            <a class="create" href="{{ url_for('create_host_event') }}">
-                <img src="{{ url_for('static', filename='icons/add.purple.svg') }}" alt="create">
-            </a>
-            <button class="filter"><img
-                    src="{{ url_for('static', filename='icons/arrow.up.arrow.down.circle.purple.svg') }}"
-                    alt="filter"></button>
+            <div class="button-row">
+                <a class="create" href="{{ url_for('create_host_event') }}">
+                    <img src="{{ url_for('static', filename='/icons/plus.circle.svg') }}" alt="create">
+                </a>
+                <button class="filter"><img
+                        src="{{ url_for('static', filename='icons/arrow.up.arrow.down.circle.purple.svg') }}"
+                        alt="filter">
+                </button>
+            </div>
         </div>
         <ul class="hosting-events">
             {% for event in hosting_events %}

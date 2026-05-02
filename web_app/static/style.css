@@ -109,7 +109,7 @@ a {
     height: 42px;
 }
 
-.past-events, .upcoming-events, .invites, .hosting-events {
+.past-events, .upcoming-events, .invites, .hosting-events, event-form {
     list-style: none;
     padding: 0;
     margin: 0;
@@ -160,7 +160,8 @@ a {
 
 .upcoming-event p,
 .invited-event p,
-.hosting-event p {
+.hosting-event p,
+.event-form label {
     color: #e693ff;
     font-weight: 700;
     font-size: 20px;
@@ -168,7 +169,7 @@ a {
 
 }
 
-.invites li{
+.invites li, .event-form{
     color: #e693ff;
     font-weight: 700;
     border-style: solid;
@@ -176,6 +177,23 @@ a {
     padding: 10px 26px;
 }
 
+.event-form {
+    display: flex;
+    flex-direction: column;
+}
+.event-form input, .event-form textarea{
+    background: transparent;
+    color: #e693ff;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #e693ff;
+    padding: 10px 4px;
+}
+.event-form button-row {
+    flex-direction: row;
+    width: 50%;
+    justify-content: end;
+}
 .actions{
     display: flex;
     flex-direction: row;
