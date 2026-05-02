@@ -287,13 +287,104 @@ def invites():
 
     return render_template("invites.html", invited_events=invited_events)
 
-
+#TODO: create route for host and add create logic
 @app.route("/host-events")
 @login_required
 def host_events():
-    return render_template("host-events.html")
+    users = get_users_collection()
+    events = get_db()["events"]
+    user = users.find_one({"_id": ObjectId(current_user.id)})
+    hosting_events = []
+    for event_id, event_datetime in user.get("events_owned", {}).items():
+        event = events.find_one({"_id": ObjectId(event_id)})
+        if event:
+            hosting_events.append({
+                "_id": event["_id"],
+                "name": event.get("name", "Untitled Event"),
+                "location": event.get("location", "No location specified"),
+                "date": event_datetime,
+                "details": event.get("description", "No description provided"),
+                "invitees_list": event.get("invitees_list", [])
+            })
+    return render_template("host-events.html", hosting_events=hosting_events)
 
+@app.route("/host-events/create", methods=["GET", "POST"])
+@login_required
+def create_host_event():
+    users = get_users_collection()
+    events = get_db()["events"]
 
+    error = None
+
+    if request.method == "POST":
+        name = request.form.get("name", "").strip()
+        location = request.form.get("location", "").strip()
+        date = request.form.get("date", "").strip()
+        time = request.form.get("time", "").strip()
+        details = request.form.get("details", "").strip()
+
+        invitee_usernames = request.form.getlist("invitee_username")
+        invitee_times = request.form.getlist("invitee_time")
+
+        if not name or not location or not date or not time:
+            error = "Please fill in name, location, date, and time."
+            return render_template("host-event-create.html", error=error)
+
+        try:
+            event_datetime = datetime.strptime(f"{date} {time}", "%Y-%m-%d %H:%M")
+        except ValueError:
+            error = "Invalid date or time."
+            return render_template("host-event-create.html", error=error)
+
+        invitees_list = []
+
+        for username, invitee_time in zip(invitee_usernames, invitee_times):
+            username = username.strip()
+
+            if not username:
+                continue
+
+            invitee_user = users.find_one({"name": username})
+
+            if not invitee_user:
+                print(f"Invitee not found: {username}")
+                continue
+
+            invitees_list.append({
+                "user_id": str(invitee_user["_id"]),
+                "name": invitee_user["name"],
+                "time": invitee_time or time,
+                "status": "pending"
+            })
+
+        event_doc = {
+            "name": name,
+            "location": location,
+            "date": event_datetime,
+            "description": details,
+            "host_id": current_user.id,
+            "invitees_list": invitees_list,
+            "created_at": datetime.now()
+        }
+
+        result = events.insert_one(event_doc)
+        event_id = str(result.inserted_id)
+
+        users.update_one(
+            {"_id": ObjectId(current_user.id)},
+            {"$set": {f"events_owned.{event_id}": event_datetime}}
+        )
+
+        for invitee in invitees_list:
+            users.update_one(
+                {"_id": ObjectId(invitee["user_id"])},
+                {"$set": {f"event_invites.{event_id}": event_datetime}}
+            )
+
+        return redirect(url_for("host_events"))
+
+    return render_template("host-event-create.html", error=error)
+     
 @app.route("/user", methods=["GET", "POST"])
 @login_required
 def user_dashboard():
@@ -343,4 +434,4 @@ def sign_out():
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=5000)
+    app.run(host="0.0.0.0", port=5000, debug=True)
